@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"gitlab.forceup.in/zengliang/rpc2-center/l4g"
 	"net/http"
 	"time"
-	"gitlab.forceup.in/zengliang/rpc2-center/logger"
 )
 
 // 对外Http server
@@ -70,7 +70,7 @@ func (hs *HttpServer) Start(endpoint string) {
 	go func() {
 		err := hs.server.ListenAndServe()
 		if err != nil {
-			logger.GlobalLogger.Fatal(err.Error())
+			l4g.GetL4g("rpc2-center").Fatal(err.Error())
 		}
 	}()
 }

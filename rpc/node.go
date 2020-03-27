@@ -1,12 +1,12 @@
 package rpc
 
 import (
-	"gitlab.forceup.in/zengliang/rpc2-center/common"
-	"gitlab.forceup.in/zengliang/rpc2-center/logger"
-	"gitlab.forceup.in/zengliang/rpc2-center/tools"
 	"context"
 	"fmt"
 	"github.com/henly2/rpc2"
+	"gitlab.forceup.in/zengliang/rpc2-center/common"
+	"gitlab.forceup.in/zengliang/rpc2-center/l4g"
+	"gitlab.forceup.in/zengliang/rpc2-center/tools"
 	"net"
 	"sync"
 	"time"
@@ -16,6 +16,7 @@ type (
 	ConnectCenterStatusCallBack func(status common.ConnectStatus)
 	Node                        struct {
 		*rpc2.Client
+		*l4g.ILoger
 		rwMu sync.RWMutex
 
 		cfgNode common.ConfigNode
@@ -28,9 +29,9 @@ type (
 		regData common.Register
 
 		statusMu sync.Mutex
-		stopped bool
+		stopped  bool
 
-		befor_bycall  BeforApiCaller
+		befor_bycall BeforApiCaller
 	}
 )
 
@@ -45,6 +46,7 @@ func NewNode(conf common.ConfigNode, meta string, cb ConnectCenterStatusCallBack
 	node.regData.Meta = tools.ParseMeta(meta)
 	node.regData.Env = tools.GetOsEnv(node.cfgNode.Env)
 	node.regData.Service = node.cfgNode.Service
+	node.ILoger = l4g.GetL4g("rpc2-client")
 
 	return node, nil
 }
@@ -86,15 +88,15 @@ func (n *Node) SetBeforCall(befor_call BeforApiCaller) {
 }
 
 func (n *Node) byCall(client *rpc2.Client, req *common.Request, res *common.Response) error {
-	logger.GlobalLogger.Info("begin call:%s", req.Method.Function)
-	defer logger.GlobalLogger.Info("end call:%s-%d", req.Method.Function, res.Data.Err)
+	n.Info("begin call:%s", req.Method.Function)
+	defer n.Info("end call:%s-%d", req.Method.Function, res.Data.Err)
 
 	if n.apiGroup == nil {
 		res.Data.Err = common.ErrInternal
 		return nil
 	}
 
-	if n.befor_bycall!=nil {
+	if n.befor_bycall != nil {
 		if !n.befor_bycall(req, res) {
 			return nil
 		}
@@ -106,8 +108,8 @@ func (n *Node) byCall(client *rpc2.Client, req *common.Request, res *common.Resp
 }
 
 func (n *Node) byNotify(client *rpc2.Client, req *common.Request, res *common.Response) error {
-	logger.GlobalLogger.Info("begin notify:%s", req.Method.Function)
-	defer logger.GlobalLogger.Info("end notify:%s-%d", req.Method.Function, res.Data.Err)
+	n.Info("begin notify:%s", req.Method.Function)
+	defer n.Info("end notify:%s-%d", req.Method.Function, res.Data.Err)
 
 	if n.apiGroup == nil {
 		res.Data.Err = common.ErrInternal
@@ -120,8 +122,8 @@ func (n *Node) byNotify(client *rpc2.Client, req *common.Request, res *common.Re
 }
 
 func (n *Node) byKeepAlive(client *rpc2.Client, req *string, res *string) error {
-	logger.GlobalLogger.Debug("begin keepalive")
-	defer logger.GlobalLogger.Debug("end keepalive")
+	n.Debug("begin keepalive")
+	defer n.Debug("end keepalive")
 
 	if *req != "ping" {
 		*res = *req
@@ -183,7 +185,7 @@ func (n *Node) registerToCenter() error {
 	var err error
 	if n.Client != nil {
 		err = n.Client.Call(common.MethodCenterRegister, &n.regData, &res)
-		logger.GlobalLogger.Info("Register to center ok %s.%s", n.cfgNode.Version, n.cfgNode.Name)
+		n.Info("Register to center ok %s.%s", n.cfgNode.Version, n.cfgNode.Name)
 	} else {
 		err = fmt.Errorf("client is nil")
 	}
@@ -196,7 +198,7 @@ func (n *Node) unRegisterToCenter() error {
 	var err error
 	if n.Client != nil {
 		n.Client.Call(common.MethodCenterUnRegister, n.cfgNode, &res)
-		logger.GlobalLogger.Info("UnRegister to center ok %s.%s", n.cfgNode.Version, n.cfgNode.Name)
+		n.Info("UnRegister to center ok %s.%s", n.cfgNode.Version, n.cfgNode.Name)
 	} else {
 		err = fmt.Errorf("client is nil")
 	}
@@ -207,11 +209,11 @@ func (n *Node) unRegisterToCenter() error {
 func (n *Node) startToCenter(ctx context.Context) {
 	go func() {
 		n.wg.Add(1)
-		logger.GlobalLogger.Info("startToCenter loop start...")
+		n.Info("startToCenter loop start...")
 
 		defer func() {
 			n.wg.Done()
-			logger.GlobalLogger.Info("startToCenter loop stop...")
+			n.Info("startToCenter loop stop...")
 		}()
 
 		for {
@@ -222,10 +224,10 @@ func (n *Node) startToCenter(ctx context.Context) {
 
 				var err error
 				if n.Client == nil {
-					logger.GlobalLogger.Info("client try to connect...")
+					n.Info("client try to connect...")
 					n.Client, err = n.connectToCenter()
 					if n.Client != nil && err == nil {
-						logger.GlobalLogger.Info("client connect to center...")
+						n.Info("client connect to center...")
 						n.Client.Handle(common.MethodNodeCall, n.byCall)
 						n.Client.Handle(common.MethodNodeNotify, n.byNotify)
 						n.Client.Handle(common.MethodNodeKeepAlive, n.byKeepAlive)
@@ -245,7 +247,7 @@ func (n *Node) startToCenter(ctx context.Context) {
 						n.Client.Close()
 						n.Client = nil
 					}
-					logger.GlobalLogger.Error("connect failed, %s", err.Error())
+					n.Error("connect failed, %s", err.Error())
 				}
 			}()
 
@@ -258,13 +260,13 @@ func (n *Node) startToCenter(ctx context.Context) {
 					return
 				}
 
-				logger.GlobalLogger.Info("client run...")
+				n.Info("client run...")
 				select {
 				case <-ctx.Done():
-					logger.GlobalLogger.Error("user disconnect client ...")
+					n.Error("user disconnect client ...")
 					break
 				case <-n.Client.DisconnectNotify():
-					logger.GlobalLogger.Error("client disconnect...")
+					n.Error("client disconnect...")
 					break
 				}
 
@@ -274,7 +276,7 @@ func (n *Node) startToCenter(ctx context.Context) {
 			}()
 
 			// unregister and close
-			func(){
+			func() {
 				n.rwMu.Lock()
 				defer n.rwMu.Unlock()
 				n.unRegisterToCenter()
@@ -282,7 +284,7 @@ func (n *Node) startToCenter(ctx context.Context) {
 					n.Client.Close()
 					n.Client = nil
 
-					logger.GlobalLogger.Info("reset client...")
+					n.Info("reset client...")
 				}
 			}()
 
@@ -290,7 +292,7 @@ func (n *Node) startToCenter(ctx context.Context) {
 				return
 			}
 
-			logger.GlobalLogger.Info("wait 5 second to connect...")
+			n.Info("wait 5 second to connect...")
 			time.Sleep(time.Second * 5)
 		}
 	}()

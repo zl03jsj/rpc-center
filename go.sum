@@ -2,3 +2,5 @@ github.com/cenkalti/hub v1.0.1 h1:UMtjc6dHSaOQTO15SVA50MBIR9zQwvsukQupDrkIRtg=
 github.com/cenkalti/hub v1.0.1/go.mod h1:tcYwtS3a2d9NO/0xDXVJWx3IedurUjYCqFCmpi0lpHs=
 github.com/henly2/rpc2 v0.0.0-20190819082716-53f25a4483ef h1:uQPX4luOYtxCbT0KXCGspPB/Eg32uxgxA4dD4dBRO4c=
 github.com/henly2/rpc2 v0.0.0-20190819082716-53f25a4483ef/go.mod h1:4vPAlp0CYhSQsKUpqvfFXWDYjDNVirmeCew3rYjAK9k=
+github.com/zl03jsj/log4go v0.0.0-20180109082532-d146e6b86faa h1:c09LqI2i09s8rh9BDxiCczYzn5ZyRRJVZDfvLdaEvic=
+github.com/zl03jsj/log4go v0.0.0-20180109082532-d146e6b86faa/go.mod h1:QcCSQEB2MLdQ6Z/u5naFvDJ0vkbTe70DWOtPIt3L/Fg=

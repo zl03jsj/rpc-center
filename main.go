@@ -89,11 +89,11 @@ func runCenter() error {
 		}
 	}
 
-	logger.GlobalLogger.Info("Waiting all routine quit...")
+	n.Info("Waiting all routine quit...")
 	rpc.StopCenter(centerInst)
-	logger.GlobalLogger.Info("All routine is quit...")
+	c.Info("All routine is quit...")
 
-	logger.GlobalLogger.Info("wait 10 second to exit...")
+	c.Info("wait 10 second to exit...")
 	time.Sleep(time.Second*10)
 
 	return nil
@@ -145,11 +145,11 @@ func runNode() error {
 		}
 	}
 
-	logger.GlobalLogger.Info("Waiting all routine quit...")
+	c.Info("Waiting all routine quit...")
 	rpc.StopNode(nodeInst)
-	logger.GlobalLogger.Info("All routine is quit...")
+	c.Info("All routine is quit...")
 
-	logger.GlobalLogger.Info("wait 10 second to exit...")
+	c.Info("wait 10 second to exit...")
 	time.Sleep(time.Second*10)
 
 	return nil

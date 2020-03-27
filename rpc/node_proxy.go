@@ -1,8 +1,8 @@
 package rpc
 
 import (
+	"github.com/zl03jsj/log4go"
 	"gitlab.forceup.in/zengliang/rpc2-center/common"
-	"gitlab.forceup.in/zengliang/rpc2-center/logger"
 	"github.com/henly2/rpc2"
 	"strings"
 	"sync"
@@ -17,6 +17,7 @@ type (
 	}
 
 	NodeGroup struct {
+		log4go.Logger
 		nodeInfo common.Service
 
 		callFunctionMap   map[string]interface{}
@@ -54,7 +55,7 @@ func (sng *NodeGroup) Register(client *rpc2.Client, reg *common.Register) error 
 	}
 	sng.nodes = append(sng.nodes, si)
 
-	logger.GlobalLogger.Debug("reg-%s.%s(%s), all-%d", reg.Version, reg.Name, reg.Tag, len(sng.nodes))
+	sng.Debug("reg-%s.%s(%s), all-%d", reg.Version, reg.Name, reg.Tag, len(sng.nodes))
 	return nil
 }
 
@@ -71,7 +72,7 @@ func (sng *NodeGroup) UnRegister(client *rpc2.Client) (*common.Register, error) 
 		}
 	}
 
-	logger.GlobalLogger.Debug("unreg-%s.%s(%s), all-%d", sng.nodeInfo.Version, sng.nodeInfo.Name, reg.Tag, len(sng.nodes))
+	sng.Debug("unreg-%s.%s(%s), all-%d", sng.nodeInfo.Version, sng.nodeInfo.Name, reg.Tag, len(sng.nodes))
 	return reg, nil
 }
 
@@ -164,7 +165,7 @@ func (sng *NodeGroup) Call(fromClient *rpc2.Client, req *common.Request, res *co
 
 	err := node.client.Call(common.MethodNodeCall, req, res)
 	if err != nil {
-		logger.GlobalLogger.Error("#Call %s:%s srv:%s", req.Method.GetInstance(), req.Method.Function, err.Error())
+		sng.Error("#Call %s:%s srv:%s", req.Method.GetInstance(), req.Method.Function, err.Error())
 
 		res.Data.Err = common.ErrCallFailed
 		return
@@ -185,7 +186,7 @@ func (sng *NodeGroup) Notify(client *rpc2.Client, req *common.Request, res *comm
 			if req.Method.Tag == "" || req.Method.Tag == node.RegisterData.Tag {
 				err := node.client.Notify(common.MethodNodeNotify, req)
 				if err != nil {
-					logger.GlobalLogger.Error("#Notify %s:%s srv:%s", req.Method.GetInstance(), req.Method.Function, err.Error())
+					sng.Error("#Notify %s:%s srv:%s", req.Method.GetInstance(), req.Method.Function, err.Error())
 					res.Data.Err = common.ErrCallFailed
 				}
 			}
