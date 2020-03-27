@@ -1,0 +1,9 @@
+{
+  "version":"v1",
+  "name":"center",
+  "tag": "center_1",
+  "http_port":":7082",
+  "rpc_port":":7081",
+  "keep_alive":5,
+  "env":[]
+}

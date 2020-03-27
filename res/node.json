@@ -1,0 +1,7 @@
+{
+	"version": "v1",
+	"name": "node",
+	"tag": "node_1",
+	"rpc_addr": "127.0.0.1:7081",
+	"env":[]
+}
