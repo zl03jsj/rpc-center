@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"time"
-	"gitlab.forceup.in/Payment/rpc2-center/logger"
+	"gitlab.forceup.in/zengliang/rpc2-center/logger"
 )
 
 // 对外Http server

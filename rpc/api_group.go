@@ -1,7 +1,7 @@
 package rpc
 
 import (
-	"gitlab.forceup.in/Payment/rpc2-center/common"
+	"gitlab.forceup.in/zengliang/rpc2-center/common"
 	"fmt"
 	"strings"
 	"sync"

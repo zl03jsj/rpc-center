@@ -1,8 +1,8 @@
 package rpc
 
 import (
-	"gitlab.forceup.in/Payment/rpc2-center/common"
-	"gitlab.forceup.in/Payment/rpc2-center/logger"
+	"gitlab.forceup.in/zengliang/rpc2-center/common"
+	"gitlab.forceup.in/zengliang/rpc2-center/logger"
 	"github.com/henly2/rpc2"
 	"strings"
 	"sync"

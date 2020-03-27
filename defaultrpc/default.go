@@ -1,7 +1,7 @@
 package defaultrpc
 
 import (
-	"gitlab.forceup.in/Payment/rpc2-center/rpc"
+	"gitlab.forceup.in/zengliang/rpc2-center/rpc"
 )
 
 var (

@@ -1,0 +1,4 @@
+github.com/cenkalti/hub v1.0.1 h1:UMtjc6dHSaOQTO15SVA50MBIR9zQwvsukQupDrkIRtg=
+github.com/cenkalti/hub v1.0.1/go.mod h1:tcYwtS3a2d9NO/0xDXVJWx3IedurUjYCqFCmpi0lpHs=
+github.com/henly2/rpc2 v0.0.0-20190819082716-53f25a4483ef h1:uQPX4luOYtxCbT0KXCGspPB/Eg32uxgxA4dD4dBRO4c=
+github.com/henly2/rpc2 v0.0.0-20190819082716-53f25a4483ef/go.mod h1:4vPAlp0CYhSQsKUpqvfFXWDYjDNVirmeCew3rYjAK9k=
