@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"gitlab.forceup.in/zengliang/rpc2-center/common"
-	"gitlab.forceup.in/zengliang/rpc2-center/logger"
+	"gitlab.forceup.in/zengliang/rpc2-center/loger"
 	"gitlab.forceup.in/zengliang/rpc2-center/rpc"
 	"gitlab.forceup.in/zengliang/rpc2-center/tools"
 	"io/ioutil"
@@ -24,8 +24,6 @@ func main() {
 	hh := tools.ParseMeta(Meta)
 	bb, _ := json.Marshal(hh)
 	fmt.Println(string(bb))
-
-	logger.InitLogger(&logger.MyLogger{})
 
 	cmd := ""
 	if len(os.Args) > 1 {
@@ -57,16 +55,16 @@ func runCenter() error {
 		return err
 	}
 
-	centerInst, err := rpc.NewCenter(cfg, Meta, func(reg *common.Register,
+	center, err := rpc.NewCenter(cfg, Meta, &loger.MyLoger{}, func(reg *common.Register,
 		status common.ConnectStatus) { })
 	if err != nil {
 		return err
 	}
 
-	apiGroup := centerInst.GetApiGroup()
+	apiGroup := center.GetApiGroup()
 	apiGroup.RegisterCaller("listsrv", func(req *common.Request, res *common.Response) {
 		fmt.Println("call listsrv")
-		res.Data.SetResult(centerInst.ListSrv())
+		res.Data.SetResult(center.ListSrv())
 	})
 	apiGroup.RegisterCaller("ping", func(req *common.Request, res *common.Response) {
 		fmt.Println("call ping")
@@ -75,7 +73,7 @@ func runCenter() error {
 
 	// start service center
 	ctx, cancel := context.WithCancel(context.Background())
-	rpc.StartCenter(ctx, centerInst)
+	rpc.StartCenter(ctx, center)
 
 	time.Sleep(time.Second * 1)
 	for {
@@ -89,11 +87,11 @@ func runCenter() error {
 		}
 	}
 
-	n.Info("Waiting all routine quit...")
-	rpc.StopCenter(centerInst)
-	c.Info("All routine is quit...")
+	center.Info("Waiting all routine quit...")
+	rpc.StopCenter(center)
+	center.Info("All routine is quit...")
 
-	c.Info("wait 10 second to exit...")
+	center.Info("wait 10 second to exit...")
 	time.Sleep(time.Second*10)
 
 	return nil
@@ -111,12 +109,12 @@ func runNode() error {
 		return err
 	}
 
-	nodeInst, err := rpc.NewNode(cfg, Meta, func(status common.ConnectStatus) { })
+	node, err := rpc.NewNode(cfg, Meta, &loger.MyLoger{}, func(status common.ConnectStatus) { })
 	if err != nil {
 		return err
 	}
 
-	apiGroup := nodeInst.GetApiGroup()
+	apiGroup := node.GetApiGroup()
 	apiGroup.RegisterNotifier("update", func(req *common.Request) {
 		fmt.Println("notify update")
 	})
@@ -131,7 +129,7 @@ func runNode() error {
 
 	// start service center
 	ctx, cancel := context.WithCancel(context.Background())
-	rpc.StartNode(ctx, nodeInst)
+	rpc.StartNode(ctx, node)
 
 	time.Sleep(time.Second * 1)
 	for {
@@ -145,11 +143,11 @@ func runNode() error {
 		}
 	}
 
-	c.Info("Waiting all routine quit...")
-	rpc.StopNode(nodeInst)
-	c.Info("All routine is quit...")
+	node.Info("Waiting all routine quit...")
+	rpc.StopNode(node)
+	node.Info("All routine is quit...")
 
-	c.Info("wait 10 second to exit...")
+	node.Info("wait 10 second to exit...")
 	time.Sleep(time.Second*10)
 
 	return nil

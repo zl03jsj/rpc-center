@@ -6,8 +6,8 @@ import (
 	"github.com/henly2/rpc2"
 	"gitlab.forceup.in/zengliang/rpc2-center/common"
 	"gitlab.forceup.in/zengliang/rpc2-center/httpserver"
+	"gitlab.forceup.in/zengliang/rpc2-center/loger"
 	"gitlab.forceup.in/zengliang/rpc2-center/tools"
-	"gitlab.forceup.in/zengliang/rpc2-center/l4g"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -19,7 +19,7 @@ import (
 type (
 	NodeConnectStatusCallBack func(reg *common.Register, status common.ConnectStatus)
 	Center                    struct {
-		*l4g.ILoger
+		loger.ILoger
 		*rpc2.Server
 
 		cfgCenter common.ConfigCenter
@@ -39,7 +39,7 @@ type (
 	}
 )
 
-func NewCenter(conf common.ConfigCenter, meta string, cb NodeConnectStatusCallBack) (*Center, error) {
+func NewCenter(conf common.ConfigCenter, meta string, loger loger.ILoger, cb NodeConnectStatusCallBack) (*Center, error) {
 	center := &Center{
 		cfgCenter:           conf,
 		cb:                  cb,
@@ -56,7 +56,7 @@ func NewCenter(conf common.ConfigCenter, meta string, cb NodeConnectStatusCallBa
 
 	// rpc2
 	center.Server = rpc2.NewServer()
-	center.ILoger = l4g.GetL4g("rpc2-center")
+	center.ILoger = loger
 
 	return center, nil
 }
@@ -102,7 +102,7 @@ func (c *Center) byRegister(client *rpc2.Client, reg *common.Register, res *stri
 
 		nodeGroup, ok := c.verNameMapNodeGroup[srvKey]
 		if !ok {
-			nodeGroup = &NodeGroup{ Logger:c.Logger, }
+			nodeGroup = &NodeGroup{ ILoger:c.ILoger, }
 			c.verNameMapNodeGroup[srvKey] = nodeGroup
 		}
 
@@ -335,6 +335,7 @@ func (c *Center) callFunction(fromClient *rpc2.Client, req *common.Request, res 
 	}
 
 	res.Data.Err = common.ErrNotFindService
+	res.Data.ErrMsg = "ErrNotFindService"
 	return
 }
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/henly2/rpc2"
 	"gitlab.forceup.in/zengliang/rpc2-center/common"
-	"gitlab.forceup.in/zengliang/rpc2-center/l4g"
+	"gitlab.forceup.in/zengliang/rpc2-center/loger"
 	"gitlab.forceup.in/zengliang/rpc2-center/tools"
 	"net"
 	"sync"
@@ -16,7 +16,7 @@ type (
 	ConnectCenterStatusCallBack func(status common.ConnectStatus)
 	Node                        struct {
 		*rpc2.Client
-		*l4g.ILoger
+		loger.ILoger
 		rwMu sync.RWMutex
 
 		cfgNode common.ConfigNode
@@ -35,10 +35,11 @@ type (
 	}
 )
 
-func NewNode(conf common.ConfigNode, meta string, cb ConnectCenterStatusCallBack) (*Node, error) {
+func NewNode(conf common.ConfigNode, meta string, iLoger loger.ILoger, cb ConnectCenterStatusCallBack) (*Node, error) {
 	node := &Node{
 		cfgNode:  conf,
 		cb:       cb,
+		ILoger:   iLoger,
 		apiGroup: NewApiGroup(),
 	}
 
@@ -46,7 +47,6 @@ func NewNode(conf common.ConfigNode, meta string, cb ConnectCenterStatusCallBack
 	node.regData.Meta = tools.ParseMeta(meta)
 	node.regData.Env = tools.GetOsEnv(node.cfgNode.Env)
 	node.regData.Service = node.cfgNode.Service
-	node.ILoger = l4g.GetL4g("rpc2-client")
 
 	return node, nil
 }

@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"gitlab.forceup.in/zengliang/rpc2-center/l4g"
+	"gitlab.forceup.in/Payment/backend/l4g"
 	"net/http"
 	"time"
 )
@@ -70,7 +70,7 @@ func (hs *HttpServer) Start(endpoint string) {
 	go func() {
 		err := hs.server.ListenAndServe()
 		if err != nil {
-			l4g.GetL4g("rpc2-center").Fatal(err.Error())
+			l4g.BuildL4g("rpc2-center", "rpc2-center").Fatal(err.Error())
 		}
 	}()
 }

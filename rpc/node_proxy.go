@@ -1,9 +1,9 @@
 package rpc
 
 import (
-	"github.com/zl03jsj/log4go"
-	"gitlab.forceup.in/zengliang/rpc2-center/common"
 	"github.com/henly2/rpc2"
+	"gitlab.forceup.in/zengliang/rpc2-center/common"
+	"gitlab.forceup.in/zengliang/rpc2-center/loger"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -17,7 +17,7 @@ type (
 	}
 
 	NodeGroup struct {
-		log4go.Logger
+		loger.ILoger
 		nodeInfo common.Service
 
 		callFunctionMap   map[string]interface{}
