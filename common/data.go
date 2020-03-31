@@ -73,6 +73,11 @@ func (self *Response) Error() error {
 	return fmt.Errorf("err_code:%d, message:%s", self.Data.Err, message)
 }
 
+func (self *Response) SetResult(code ErrCode, err_msg string) {
+	self.Data.Err = code
+	self.Data.ErrMsg = err_msg
+}
+
 // 从path解析方法
 func (method *Method) FromPath(path string) {
 	path = strings.Trim(path, "/")
