@@ -3,6 +3,7 @@ package common
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"strings"
 )
 
@@ -41,9 +42,9 @@ type (
 
 	// IMPORTANT!!! do not directly set Result=..., use SetResult and GetResult
 	UserResponse struct {
-		Err    ErrCode    `json:"err" doc:"错误码"`
-		ErrMsg string `json:"errmsg,omitempty" doc:"错误信息"`
-		Result string `json:"result,omitempty" doc:"返回数据，需要自己解析"`
+		Err    ErrCode `json:"err" doc:"错误码"`
+		ErrMsg string  `json:"errmsg,omitempty" doc:"错误信息"`
+		Result string  `json:"result,omitempty" doc:"返回数据，需要自己解析"`
 	}
 
 	Request struct {
@@ -57,6 +58,20 @@ type (
 		Data    UserResponse `json:"data"`
 	}
 )
+
+func (self *Response) Error() error {
+	if self.Data.Err == ErrOk {
+		return nil
+	}
+
+	var message string
+	if self.Data.ErrMsg != "" {
+		message = self.Data.ErrMsg
+	} else {
+		message = self.Data.Err.String()
+	}
+	return fmt.Errorf("err_code:%d, message:%s", self.Data.Err, message)
+}
 
 // 从path解析方法
 func (method *Method) FromPath(path string) {
