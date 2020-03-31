@@ -56,7 +56,8 @@ func runCenter() error {
 	}
 
 	center, err := rpc.NewCenter(cfg, Meta, &loger.MyLoger{}, func(reg *common.Register,
-		status common.ConnectStatus) { })
+		status common.ConnectStatus) {
+	})
 	if err != nil {
 		return err
 	}
@@ -92,7 +93,7 @@ func runCenter() error {
 	center.Info("All routine is quit...")
 
 	center.Info("wait 10 second to exit...")
-	time.Sleep(time.Second*10)
+	time.Sleep(time.Second * 10)
 
 	return nil
 }
@@ -109,7 +110,7 @@ func runNode() error {
 		return err
 	}
 
-	node, err := rpc.NewNode(cfg, Meta, &loger.MyLoger{}, func(status common.ConnectStatus) { })
+	node, err := rpc.NewNode(cfg, Meta, &loger.MyLoger{}, func(status common.ConnectStatus) {})
 	if err != nil {
 		return err
 	}
@@ -121,8 +122,8 @@ func runNode() error {
 	apiGroup.RegisterCaller("ping", func(req *common.Request, res *common.Response) {
 		fmt.Println("call ping")
 		res.Data.SetResult(map[string]interface{}{
-			"aa":map[string]string{
-				"bb":"cc",
+			"aa": map[string]string{
+				"bb": "cc",
 			},
 		})
 	})
@@ -148,7 +149,7 @@ func runNode() error {
 	node.Info("All routine is quit...")
 
 	node.Info("wait 10 second to exit...")
-	time.Sleep(time.Second*10)
+	time.Sleep(time.Second * 10)
 
 	return nil
 }

@@ -1,7 +1,7 @@
 package rpc
 
 import (
-	"github.com/henly2/rpc2"
+	"github.com/zl03jsj/rpc2"
 	"gitlab.forceup.in/zengliang/rpc2-center/common"
 	"gitlab.forceup.in/zengliang/rpc2-center/loger"
 	"strings"
@@ -104,7 +104,7 @@ func (sng *NodeGroup) GetNodeCount() int {
 
 type futureReciveRes chan *rpc2.Call
 
-func make_faild_futrueRes(res *common.Response, err_code int) futureReciveRes {
+func make_faild_futrueRes(res *common.Response, err_code common.ErrCode) futureReciveRes {
 	receive := make(chan *rpc2.Call, 1)
 	res.Data.Err = err_code
 	receive <- &rpc2.Call{}

@@ -1,9 +1,9 @@
 package tools
 
 import (
-	"time"
 	"os"
 	"strings"
+	"time"
 )
 
 func GetDateNowString() string {

@@ -1,16 +1,16 @@
 package rpc
 
 import (
-	"gitlab.forceup.in/zengliang/rpc2-center/common"
 	"fmt"
+	"gitlab.forceup.in/zengliang/rpc2-center/common"
 	"strings"
 	"sync"
 )
 
 type (
 	BeforApiCaller func(req *common.Request, res *common.Response) bool
-	ApiCaller   func(req *common.Request, res *common.Response)
-	ApiNotifier func(req *common.Request)
+	ApiCaller      func(req *common.Request, res *common.Response)
+	ApiNotifier    func(req *common.Request)
 
 	ApiCallerInfo struct {
 		Name    string

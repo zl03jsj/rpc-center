@@ -3,7 +3,7 @@ package rpc
 import (
 	"context"
 	"fmt"
-	"github.com/henly2/rpc2"
+	"github.com/zl03jsj/rpc2"
 	"gitlab.forceup.in/zengliang/rpc2-center/common"
 	"gitlab.forceup.in/zengliang/rpc2-center/loger"
 	"gitlab.forceup.in/zengliang/rpc2-center/tools"

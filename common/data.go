@@ -9,7 +9,7 @@ import (
 // 对外输入输出
 type (
 	HttpUserResponse struct {
-		Err    int         `json:"err" doc:"错误码"`
+		Err    ErrCode     `json:"err" doc:"错误码"`
 		ErrMsg string      `json:"errmsg,omitempty" doc:"错误信息"`
 		Result interface{} `json:"result,omitempty" doc:"返回数据，需要自己解析"`
 	}
@@ -41,7 +41,7 @@ type (
 
 	// IMPORTANT!!! do not directly set Result=..., use SetResult and GetResult
 	UserResponse struct {
-		Err    int    `json:"err" doc:"错误码"`
+		Err    ErrCode    `json:"err" doc:"错误码"`
 		ErrMsg string `json:"errmsg,omitempty" doc:"错误信息"`
 		Result string `json:"result,omitempty" doc:"返回数据，需要自己解析"`
 	}
@@ -76,23 +76,23 @@ func (method *Method) FromPath(path string) {
 	}
 }
 
-func (req *UserRequest)SetValue(d interface{}) error {
+func (req *UserRequest) SetValue(d interface{}) error {
 	var err error
 	req.Value, err = toData(d)
 	return err
 }
 
-func (req *UserRequest)GetValue(value interface{}) error {
+func (req *UserRequest) GetValue(value interface{}) error {
 	return fromData(req.Value, &value)
 }
 
-func (res *UserResponse)SetResult(d interface{}) error {
+func (res *UserResponse) SetResult(d interface{}) error {
 	var err error
 	res.Result, err = toData(d)
 	return err
 }
 
-func (res *UserResponse)GetResult(result interface{}) error {
+func (res *UserResponse) GetResult(result interface{}) error {
 	return fromData(res.Result, &result)
 }
 
@@ -105,7 +105,7 @@ func toData(value interface{}) (string, error) {
 }
 
 func fromData(data string, value interface{}) error {
-	if data == ""{
+	if data == "" {
 		return nil
 	}
 	b, err := base64.StdEncoding.DecodeString(data)

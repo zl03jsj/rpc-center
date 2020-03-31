@@ -6,14 +6,14 @@ import (
 
 var (
 	defaultCenterInst *rpc.Center
-	defaultNodeInst *rpc.Node
+	defaultNodeInst   *rpc.Node
 )
 
-func SetDefaultCenterInst(centerInst *rpc.Center)  {
+func SetDefaultCenterInst(centerInst *rpc.Center) {
 	defaultCenterInst = centerInst
 }
 
-func SetDefaultNodeInst(nodeInst *rpc.Node)  {
+func SetDefaultNodeInst(nodeInst *rpc.Node) {
 	defaultNodeInst = nodeInst
 }
 
