@@ -40,7 +40,7 @@ type (
 		Value string `json:"value,omitempty" doc:"请求数据，需要自己解析"`
 	}
 
-	// IMPORTANT!!! do not directly set Result=..., use SetResult and GetResult
+	// IMPORTANT!!! do not directly set Result=..., use SetErrResult and Result
 	UserResponse struct {
 		Err    ErrCode `json:"err" doc:"错误码"`
 		ErrMsg string  `json:"errmsg,omitempty" doc:"错误信息"`
@@ -73,9 +73,21 @@ func (self *Response) Error() error {
 	return fmt.Errorf("err_code:%d, message:%s", self.Data.Err, message)
 }
 
-func (self *Response) SetResult(code ErrCode, err_msg string) {
+func (self *Response) Result(i interface{}) error {
+	if err := self.Error(); err != nil {
+		return err
+	}
+	return self.Data.GetResult(i)
+}
+
+func (self *Response) SetErrResult(code ErrCode, err_msg string) {
 	self.Data.Err = code
 	self.Data.ErrMsg = err_msg
+}
+
+func (self *Response) SetOkResult(i interface{}) error {
+	self.Data.Err = ErrOk
+	return self.Data.SetResult(i)
 }
 
 // 从path解析方法
