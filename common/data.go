@@ -80,9 +80,9 @@ func (self *Response) Result(i interface{}) error {
 	return self.Data.GetResult(i)
 }
 
-func (self *Response) SetErrResult(code ErrCode, err_msg string) {
+func (self *Response) SetErrResult(code ErrCode, err_fmt string, args ...interface{}) {
 	self.Data.Err = code
-	self.Data.ErrMsg = err_msg
+	self.Data.ErrMsg = fmt.Sprintf(err_fmt, args...)
 }
 
 func (self *Response) SetOkResult(i interface{}) error {
