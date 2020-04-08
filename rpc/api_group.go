@@ -29,17 +29,23 @@ type (
 		apiNotifierNameList []string
 		apiNotifierInfoMap  map[string]*ApiNotifierInfo
 
-		rWMutex sync.RWMutex
+		beforeExec BeforApiCaller
+		rWMutex    sync.RWMutex
 	}
 )
 
-func NewApiGroup() *ApiInfoGroup {
+func NewApiGroup(beforExec BeforApiCaller) *ApiInfoGroup {
 	ag := &ApiInfoGroup{
 		apiCallerInfoMap:   make(map[string]*ApiCallerInfo),
 		apiNotifierInfoMap: make(map[string]*ApiNotifierInfo),
+		beforeExec:         beforExec,
 	}
 
 	return ag
+}
+
+func (ag *ApiInfoGroup) SetOnBeforeExec(beforExec BeforApiCaller) {
+	ag.beforeExec = beforExec
 }
 
 func (ag *ApiInfoGroup) RegisterCaller(name string, handler ApiCaller) error {
@@ -94,6 +100,11 @@ func (ag *ApiInfoGroup) HandleCall(req *common.Request, res *common.Response) {
 
 	h := ag.apiCallerInfoMap[strings.ToLower(req.Method.Function)]
 	if h != nil {
+		if ag.beforeExec != nil {
+			if !ag.beforeExec(req, res) {
+				return
+			}
+		}
 		h.Handler(req, res)
 	} else {
 		res.Data.Err = common.ErrNotFindCaller

@@ -39,13 +39,13 @@ type (
 	}
 )
 
-func NewCenter(conf common.ConfigCenter, meta string, loger loger.ILoger, cb NodeConnectStatusCallBack) (*Center, error) {
+func NewCenter(conf common.ConfigCenter, meta string, loger loger.ILoger, cb NodeConnectStatusCallBack, before BeforApiCaller) (*Center, error) {
 	center := &Center{
 		cfgCenter:           conf,
 		cb:                  cb,
 		verNameMapNodeGroup: make(map[string]*NodeGroup),
 		clientMapNodeGroup:  make(map[*rpc2.Client]*NodeGroup),
-		apiGroup:            NewApiGroup(),
+		apiGroup:            NewApiGroup(before),
 		httpServer:          httpserver.NewHttpServer(),
 	}
 

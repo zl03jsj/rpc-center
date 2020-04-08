@@ -40,7 +40,7 @@ func NewNode(conf common.ConfigNode, meta string, iLoger loger.ILoger, cb Connec
 		cfgNode:  conf,
 		cb:       cb,
 		ILoger:   iLoger,
-		apiGroup: NewApiGroup(),
+		apiGroup: NewApiGroup(nil),
 	}
 
 	node.regData.StartAt = tools.GetDateNowString()

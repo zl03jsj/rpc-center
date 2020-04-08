@@ -57,7 +57,7 @@ func runCenter() error {
 
 	center, err := rpc.NewCenter(cfg, Meta, &loger.MyLoger{}, func(reg *common.Register,
 		status common.ConnectStatus) {
-	})
+	}, nil)
 	if err != nil {
 		return err
 	}
