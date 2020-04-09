@@ -1,5 +1,9 @@
 package common
 
+import (
+	"sync"
+)
+
 type ErrCode int64
 
 const (
@@ -21,6 +25,18 @@ var err_msgs = map[ErrCode]string{
 	ErrNotFindCaller:   "method not found",
 	ErrNotFindNotifier: "notifier not found",
 	ErrDataCorrupted:   "invalid data"}
+
+var mutx sync.Mutex
+
+func RegistErrorInfo(code ErrCode, msg string) bool {
+	mutx.Lock()
+	defer mutx.Unlock()
+	if _, exist := err_msgs[code]; exist {
+		return false
+	}
+	err_msgs[code] = msg
+	return true
+}
 
 func (self ErrCode) String() string {
 	msg, isok := err_msgs[self]
