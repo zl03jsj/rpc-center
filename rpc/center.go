@@ -371,8 +371,8 @@ func (c *Center) handleCall(w http.ResponseWriter, req *http.Request) {
 	c.Trace("Http server Accept a call client: %s", req.RemoteAddr)
 	defer req.Body.Close()
 
-	//w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
-	//w.Header().Add("Access-Control-Allow-Headers", "Content-Type") //header的类型
+	w.Header().Set("Access-Control-Allow-Origin", "*")             //允许访问所有域
+	w.Header().Add("Access-Control-Allow-Headers", "Content-Type") //header的类型
 
 	c.wg.Add(1)
 	defer c.wg.Done()
