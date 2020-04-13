@@ -18,9 +18,7 @@ type (
 
 // 内部RPC
 type (
-	Context struct {
-	}
-
+	Context map[string]interface{}
 	Register struct {
 		Service
 		StartAt      string            `json:"start_at"`

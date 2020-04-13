@@ -379,7 +379,6 @@ func (c *Center) handleCall(w http.ResponseWriter, req *http.Request) {
 
 	userResponse := common.HttpUserResponse{}
 	func() {
-		//fmt.Println("path=", req.URL.Path)
 		reqData := common.Request{}
 		reqData.Method.FromPath(req.URL.Path)
 		reqData.Method.Tag = req.URL.Query().Get("tag")
