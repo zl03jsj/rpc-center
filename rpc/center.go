@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"net"
 	"net/http"
+	"runtime/debug"
 	"strings"
 	"sync"
 	"time"
@@ -324,7 +325,12 @@ func (c *Center) callFunction(fromClient *rpc2.Client, req *common.Request, res 
 			res.Data.Err = common.ErrInternal
 			return
 		}
-
+		defer func() {
+			if err := recover(); err != nil {
+				c.Error("Request method:%s failed, detail:%v", req.Method.Function, err)
+				c.Error(string(debug.Stack()))
+			}
+		}()
 		c.apiGroup.HandleCall(req, res)
 		return
 	}
