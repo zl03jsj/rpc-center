@@ -406,6 +406,7 @@ func (c *Center) handleCall(w http.ResponseWriter, req *http.Request) {
 			c.Error("call http handler: %d", resData.Data.Err)
 			userResponse.Err = resData.Data.Err
 			userResponse.ErrMsg = resData.Data.ErrMsg
+			userResponse.Result = resData.Data.Result
 			return
 		}
 
