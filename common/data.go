@@ -18,7 +18,7 @@ type (
 
 // 内部RPC
 type (
-	Context map[string]interface{}
+	Context  map[string]interface{}
 	Register struct {
 		Service
 		StartAt      string            `json:"start_at"`
@@ -71,11 +71,12 @@ func (self *Response) Error() error {
 	return fmt.Errorf("err_code:%d, message:%s", self.Data.Err, message)
 }
 
-func (self *Response) Result(i interface{}) error {
-	if err := self.Error(); err != nil {
+func (self *Response) SetResult(i interface{}, code ErrCode, err_fmt string, args ...interface{}) error {
+	if err := self.SetOkResult(i); err != nil {
 		return err
 	}
-	return self.Data.GetResult(i)
+	self.SetErrResult(code, err_fmt, args...)
+	return nil
 }
 
 func (self *Response) SetErrResult(code ErrCode, err_fmt string, args ...interface{}) {
